@@ -1,0 +1,44 @@
+import streamlit as st
+import pickle
+import sklearn
+from PIL import Image
+import numpy as np
+import pandas as pd
+
+
+
+
+model=pickle.load(open('model.sav','rb'))
+
+st.title("House Price Prediction")
+st.sidebar.header("House  price Prediction")
+# image=Image.open('')
+# st.image(image,'title')
+
+def user_data():
+    GrLivArea=st.sidebar.number_input('GrLivArea')
+    BedroomAbvGr=st.sidebar.number_input('BedroomAbvGr')
+    FullBath=st.sidebar.number_input('FullBath')
+    HalfBath=st.sidebar.number_input('HalfBath')
+    totalBath=FullBath+(0.5*HalfBath)
+
+
+    user_data_dict={
+        'GrLivArea':GrLivArea,
+        'BedroomAbvGr':BedroomAbvGr,
+        'TotalBath':totalBath
+    }
+
+    return pd.DataFrame(user_data_dict,index=[0])
+
+
+
+USER_GIVEN=user_data()
+st.header("House data is")
+st.write(USER_GIVEN)
+
+
+price = model.predict(USER_GIVEN)
+st.subheader("PREDICTED HOUSE PRICE IS")
+st.subheader(np.round(price[0],2))
+
